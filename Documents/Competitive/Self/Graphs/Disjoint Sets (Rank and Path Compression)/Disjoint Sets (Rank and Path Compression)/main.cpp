@@ -51,6 +51,13 @@ public:
             parent1 -> parent = parent2;
     }
     
+    int findSet(int data) {
+        map <int, Node*> :: iterator it;
+        it = Map.find(data);
+        Node *temp = it -> second;
+        return (findSet(temp)) -> data;
+    }
+    
     Node *findSet(Node *node) {
         Node *parent = node -> parent;
         if(parent == node)
@@ -61,5 +68,33 @@ public:
 };
 
 int main() {
+    DisjointSet ds;
+    ds.MakeSet(1);
+    ds.MakeSet(2);
+    ds.MakeSet(3);
+    ds.MakeSet(4);
+    ds.MakeSet(5);
+    ds.MakeSet(6);
+    ds.MakeSet(7);
+    
+    ds.Union(1, 2);
+    ds.Union(2, 3);
+    ds.Union(4, 5);
+    ds.Union(6, 7);
+    ds.Union(5, 6);
+    ds.Union(3, 7);
+    
+    
+    cout<<ds.findSet(1);
+    cout<<ds.findSet(2);
+    cout<<ds.findSet(3);
+    cout<<ds.findSet(4);
+    cout<<ds.findSet(5);
+    cout<<ds.findSet(6);
+    cout<<ds.findSet(7);
+    
+    return 0;
     
 }
+
+
