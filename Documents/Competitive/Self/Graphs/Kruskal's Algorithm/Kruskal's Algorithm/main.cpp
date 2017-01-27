@@ -9,23 +9,25 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 class Graph {
 public:
     int V, E;
-    vector<pair<int, int> > *adj;
+    vector<pair<int, pair<int, int> > > edges;
     
     Graph(int v, int e) {
         this -> V= v;
         this -> E = e;
-        adj = new vector<pair<int, int> >[V];
+        //edges = new vector<pair<int, pair<int, int> > > [v];
     }
     
     void addEdge(int u, int v, int w) {
-        adj[u].push_back(make_pair(v, w));
+        edges.push_back({w, {u, v}});
     }
     
+    int kruskalMST();
 };
 
 class Node {
@@ -85,50 +87,55 @@ public:
     }
 };
 
-int main() {
+int Graph :: kruskalMST() {
+    int FinalW = 0;
+    sort(edges.begin(), edges.end());
     DisjointSet ds;
-    Graph G(4,4);
-    //Initialising disjoint sets
-    for(int i=0; i<4; i++) {
+    for(int i=0; i<V; i++) {
         ds.MakeSet(i);
     }
+    vector<pair<int, pair<int, int> > > :: iterator it;
+    for(it = edges.begin(); it != edges.end(); it++) {
+        int u = it->second.first;
+        int v = it->second.second;
+        
+        int set_u = ds.findSet(u);
+        int set_v = ds.findSet(v);
+        
+        if(set_u != set_v) {
+            cout<<u<<" - "<<v<<endl;
+            FinalW += it ->first;
+            ds.Union(u, v);
+        }
+        
+    }
+    return FinalW;
     
+}
+
+int main() {
+    int V = 9, E = 14;
+    Graph g(V, E);
     
+    g.addEdge(0, 1, 4);
+    g.addEdge(0, 7, 8);
+    g.addEdge(1, 2, 8);
+    g.addEdge(1, 7, 11);
+    g.addEdge(2, 3, 7);
+    g.addEdge(2, 8, 2);
+    g.addEdge(2, 5, 4);
+    g.addEdge(3, 4, 9);
+    g.addEdge(3, 5, 14);
+    g.addEdge(4, 5, 10);
+    g.addEdge(5, 6, 2);
+    g.addEdge(6, 7, 1);
+    g.addEdge(6, 8, 6);
+    g.addEdge(7, 8, 7);
     
+    cout << "Edges of MST are \n";
+    int mst_wt = g.kruskalMST();
     
-    
-    
-    
-    
-    
-    
-    
-    
-    /*DisjointSet ds;
-    ds.MakeSet(1);
-    ds.MakeSet(2);
-    ds.MakeSet(3);
-    ds.MakeSet(4);
-    ds.MakeSet(5);
-    ds.MakeSet(6);
-    ds.MakeSet(7);
-    
-    ds.Union(1, 2);
-    ds.Union(2, 3);
-    ds.Union(4, 5);
-    ds.Union(6, 7);
-    ds.Union(5, 6);
-    ds.Union(3, 7);
-    
-    
-    cout<<ds.findSet(1);
-    cout<<ds.findSet(2);
-    cout<<ds.findSet(3);
-    cout<<ds.findSet(4);
-    cout<<ds.findSet(5);
-    cout<<ds.findSet(6);
-    cout<<ds.findSet(7);
-    */
+    cout << "\nWeight of MST is " << mst_wt;
     
     return 0;
     
